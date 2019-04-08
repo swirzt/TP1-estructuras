@@ -17,6 +17,12 @@ typedef struct _GNode {
 
 typedef GNode* GList;
 
+typedef struct {
+  char* nombre;
+  char* pais;
+  int edad;
+} Persona;
+
 // En este trabajo usaremos listas doblemente enlazadas circulares
 
 /*
@@ -32,10 +38,10 @@ GList glist_crear();
 int glist_vacia(GList lista);
 
 /*
-** glist_deguir : GList -> void
+** glist_destruir : GList -> void
 ** Deguye la lista ingresada (libera toda la memoria dedicada).
 */
-void glist_deguir(GList lista);
+void glist_destruir(GList lista);
 
 /*
 ** glist_largo : GList -> Int
@@ -47,24 +53,36 @@ int glist_largo(GList lista);
 ** glist_devolver_dato : GList Int -> Char*
 ** Devuelve la cadena de la lista en la posicion dada.
 */
-char* glist_devolver_dato(GList lista, int pos);
+void* glist_devolver_dato(GList lista, int pos);
 
 /*
 ** glist_agregar : GList Char* -> GList
 ** Agrega un nuevo nodo con el dato dado en el final de la lista.
 */
-GList glist_agregar(GList lista, char* dato);
+GList glist_agregar(GList lista, void* dato);
 
 /*
-** gcharcat : Char* Char -> void
-** Concatena el caracter a la cadena ingresada.
+** persona_crear : char* char* int -> Persona*
+** Crea un nuevo elemento de la estructura Persona  
 */
-void gcharcat(char* g, char c);
+Persona* persona_crear(char* nombre, int edad, char* pais);
 
 /*
-** glist_llenar : GList Char* -> GList
-** LLena la lista con datos obtenidos del archivo dado.
+** llenar_lista_personas : GList char* -> Glist
+** Llena una GList vacia con nodos de elemento personas
 */
-GList glist_llenar(GList lista, char* nombreArchivo);
+GList llenar_lista_personas(GList lista,char* archivopersonas);
+
+/*
+** glist_map : GList Funcion Copia -> GList
+** Aplica una funcion f a cada elemento de la lista
+*/
+GList glist_map(GList lista, Funcion f, Copia c);
+
+/*
+** glist_filter : GList Predicado Copia
+** Devuelve una GList con los elementos de lista que cumplan con un predicado p
+*/
+GList glist_filter(GList lista, Predicado p, Copia c);
 
 #endif /* __GLIST_H__ */

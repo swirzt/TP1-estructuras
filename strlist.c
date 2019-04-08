@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wctype.h>
+#include <locale.h>
 
 // En este trabajo usaremos listas doblemente enlazadas circulares
 
@@ -50,9 +52,8 @@ int strlist_largo(StrList lista) {
 ** strlist_devolver_dato : StrList Int -> Char*
 ** Devuelve la cadena de la lista en la posicion dada.
 */
-char* strlist_devolver_dato(StrList lista, int pos) {
+char* strlist_devolver_dato(StrList lista, int pos, int largolista) {
   if (strlist_vacia(lista)) return NULL;
-  int largolista = strlist_largo(lista);
   if (largolista / 2 > pos)  // Recorro hacia adelante
     for (int i = 0; i < pos; i++) lista = lista->next;
   else {  // Recorro hacia atras
@@ -104,13 +105,15 @@ StrList strlist_llenar(StrList lista, char* nombreArchivo) {
   *buffer = '\0';
   bufferc = fgetc(archivo);
   while (bufferc != EOF) {
-    while (bufferc != '\n' && bufferc != EOF) {
+    while (bufferc != '\0' && bufferc != '\r' && bufferc != EOF) {
+      if(iswalpha(bufferc))
       strcharcat(buffer, bufferc);
       bufferc = fgetc(archivo);
     }
     lista = strlist_agregar(lista, buffer);
-    strcpy(buffer, "");
-    if (bufferc != EOF) bufferc = fgetc(archivo);
+    strcpy(buffer, ""); //Reinicializa buffer
+    while (bufferc != EOF && (bufferc == '\n' || bufferc == '\r'))
+      bufferc = fgetc(archivo);
   }
   free(buffer);
   return lista;
