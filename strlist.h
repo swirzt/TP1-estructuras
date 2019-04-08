@@ -38,10 +38,10 @@ void strlist_destruir(StrList lista);
 int strlist_largo(StrList lista);
 
 /*
-** strlist_devolver_dato : StrList Int -> Char*
+** strlist_devolver_dato : StrList Int Int -> Char*
 ** Devuelve la cadena de la lista en la posicion dada.
 */
-char* strlist_devolver_dato(StrList lista, int pos);
+char* strlist_devolver_dato(StrList lista, int pos, int largolista);
 
 /*
 ** strlist_agregar : StrList Char* -> StrList

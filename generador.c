@@ -3,6 +3,7 @@
 #include <time.h>
 #include <unistd.h>
 #include "strlist.h"
+#include <locale.h>
 
 /*
 ** revisa_archivos : -> Int
@@ -56,9 +57,9 @@ void genera_personas(int cantDatos, StrList nombres, StrList paises) {
     rndNombres = rand() % largoNombres;
     rndPaises = rand() % largoPaises;
     rndEdad = (rand() % 100) + 1;
-    fprintf(archivo, "%s,", strlist_devolver_dato(nombres, rndNombres));
-    fprintf(archivo, "%s,", strlist_devolver_dato(paises, rndPaises));
-    fprintf(archivo, "%d\n", rndEdad);
+    fprintf(archivo, "%s,", strlist_devolver_dato(nombres, rndNombres, largoNombres));
+    fprintf(archivo, "%d,", rndEdad);
+    fprintf(archivo, "%s\n", strlist_devolver_dato(paises, rndPaises, largoPaises));
   }
   fclose(archivo);
 }
