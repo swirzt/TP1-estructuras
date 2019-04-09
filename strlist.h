@@ -50,12 +50,6 @@ char* strlist_devolver_dato(StrList lista, int pos, int largolista);
 StrList strlist_agregar(StrList lista, char* dato);
 
 /*
-** strcharcat : Char* Char -> void
-** Concatena el caracter a la cadena ingresada.
-*/
-void strcharcat(char* str, char c);
-
-/*
 ** strlist_llenar : StrList Char* -> StrList
 ** LLena la lista con datos obtenidos del archivo dado.
 */

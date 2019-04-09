@@ -3,34 +3,56 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Utilizamos listas doblemente enlazadas circulares
+
+/*
+** glist_crear : -> GList
+** Devuelve una lista doblemente enlazada vacía (NULL).
+*/
 GList glist_crear() { return NULL; }
 
+/*
+** glist_vacia : GList -> Int
+** Devuelve 1 si la lista es vacía, de lo contrario devuelve 0.
+*/
 int glist_vacia(GList lista) { return lista == NULL; }
 
-void glist_destruir(GList lista) {
+/*
+** glist_destruir : GList Destruir -> void
+** Deguye la lista ingresada (libera toda la memoria dedicada).
+*/
+void glist_destruir(GList lista, Destruir d) {
   if (!glist_vacia(lista)) {
     GList i = lista;
     for (; i->next != lista;) {
       GList sigtmp = i->next;
-      free(i->dato);
+      d(i->dato);
       free(i);
       i = sigtmp;
     }
-    free(i->dato);
+    d(i->dato);
     free(i);
   }
 }
 
+/*
+** glist_largo : GList -> Int
+** Devuelve el largo de la lista ingresada.
+*/
 int glist_largo(GList lista) {
+  if (glist_vacia(lista)) return 0;
   GList inicio = lista;
   int i = 0;
   for (; lista->next != inicio; lista = lista->next) i++;
   return ++i;
 }
 
-void* glist_devolver_dato(GList lista, int pos) {
+/*
+** glist_devolver_dato : GList Int Int -> void*
+** Devuelve la cadena de la lista en la posicion dada.
+*/
+void* glist_devolver_dato(GList lista, int pos, int largolista) {
   if (glist_vacia(lista)) return NULL;
-  int largolista = glist_largo(lista);
   if (largolista / 2 > pos)  // Recorro hacia adelante
     for (int i = 0; i < pos; i++) lista = lista->next;
   else {  // Recorro hacia atras
@@ -40,6 +62,10 @@ void* glist_devolver_dato(GList lista, int pos) {
   return lista->dato;
 }
 
+/*
+** glist_agregar : GList void* -> GList
+** Agrega un nuevo nodo con el dato dado en el final de la lista.
+*/
 GList glist_agregar(GList lista, void* dato) {
   GList nuevoNodo = malloc(sizeof(GNode));
   nuevoNodo->dato = dato;
@@ -56,71 +82,31 @@ GList glist_agregar(GList lista, void* dato) {
   }
 }
 
-Persona* persona_crear(char* nombre, int edad, char* pais) {
-  Persona* nuevaPersona = malloc(sizeof(Persona));
-  char* nombrecpy = malloc(sizeof(char) * 14);
-  strcpy(nombrecpy, nombre);
-  char* paiscpy = malloc(sizeof(char) * 44);
-  strcpy(paiscpy, pais);
-  nuevaPersona->nombre = nombrecpy;
-  nuevaPersona->pais = paiscpy;
-  nuevaPersona->edad = edad;
-  return nuevaPersona;
+/*
+** glist_map : GList Funcion Copia -> GList
+** Aplica una funcion f a cada elemento de la lista
+*/
+GList glist_map(GList lista, Funcion f, Copia c) {
+  GList inicio = lista;
+  GList listaMapeada = glist_crear();
+  for (; lista->next != inicio; lista = lista->next)
+    listaMapeada = glist_agregar(listaMapeada, f(c(lista->dato)));
+  listaMapeada = glist_agregar(listaMapeada, f(c(lista->dato)));
+  return listaMapeada;
 }
 
-void archivoleer(FILE* archivo, char* buffer, char* bufferc) {
-  int i = 0;
-  for (; *bufferc != ',' || *bufferc != '\n'; i++) {
-    *(buffer + i) = *bufferc;
-    *bufferc = fgetc(archivo);
-  }
-  *(buffer + i) = '\0';
-  *bufferc = fgetc(archivo);
-}
+/*
+** glist_filter : GList Predicado Copia -> GList
+** Devuelve una GList con los elementos de lista que cumplan con un predicado p
+*/
+GList glist_filter(GList lista, Predicado p, Copia c) {
+  GList inicio = lista;
+  GList listaFiltrada = glist_crear();
+  for (; lista->next != inicio; lista = lista->next)
+    if (p(lista->dato))
+      listaFiltrada = glist_agregar(listaFiltrada, c(lista->dato));
+  if (p(lista->dato))
+    listaFiltrada = glist_agregar(listaFiltrada, c(lista->dato));
 
-GList llenar_lista_personas(GList lista, char* archivoPersonas) {
-  FILE* archivo = fopen(archivoPersonas, "r");
-  char* buffer1 = malloc(sizeof(char) * 45);
-  char* buffer2 = malloc(sizeof(char) * 4);
-  char* buffer3 = malloc(sizeof(char) * 45);
-  char* bufferc = malloc(sizeof(char));
-  *bufferc = fgetc(archivo);
-  while (*bufferc != EOF) {
-    // int i;
-    // for (i = 0; bufferc != ','; i++) {
-    //   *(buffer1 + i) = bufferc;
-    //   bufferc = fgetc(archivo);
-    // }
-    // *(buffer1 + i) = '\0';
-    // bufferc = fgetc(archivo);
-    archivoleer(archivo, buffer1, bufferc);
-    // for (i = 0; bufferc != ','; i++) {
-    //   *(buffer2 + i) = bufferc;
-    //   bufferc = fgetc(archivo);
-    // }
-    // *(buffer2 + i) = '\0';
-    // bufferc = fgetc(archivo);
-    archivoleer(archivo, buffer2, bufferc);
-    // for (i = 0; bufferc != '\n'; i++) {
-    //   *(buffer3 + i) = bufferc;
-    //   bufferc = fgetc(archivo);
-    // }
-    // *(buffer3 + i) = '\0';
-    // bufferc = fgetc(archivo);
-    archivoleer(archivo, buffer3, bufferc);
-    Persona* personaTmp = persona_crear(buffer1, atoi(buffer2), buffer3);
-    lista = glist_agregar(lista, personaTmp);
-  }
-  free(buffer1);
-  free(buffer2);
-  free(buffer3);
-  free(bufferc);
-  fclose(archivo);
-  return lista;
+  return listaFiltrada;
 }
-
-// GList glist_map(GList lista, Funcion f, Copia c){
-//   GList inicio = lista;
-//   GList listaMapeada =
-//   for (;)
-// }

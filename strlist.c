@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <wctype.h>
-#include <locale.h>
 
 // En este trabajo usaremos listas doblemente enlazadas circulares
 
@@ -88,10 +86,10 @@ StrList strlist_agregar(StrList lista, char* dato) {
 ** strcharcat : Char* Char -> void
 ** Concatena el caracter a la cadena ingresada.
 */
-void strcharcat(char* str, char c) {
-  size_t len = strlen(str);
-  *(str + len) = c;
-  *(str + len + 1) = '\0';
+void strcharcat(char* str, char c, int i) {
+  // size_t len = strlen(str);
+  *(str + i) = c;
+  *(str + i + 1) = '\0';
 }
 
 /*
@@ -102,19 +100,21 @@ StrList strlist_llenar(StrList lista, char* nombreArchivo) {
   FILE* archivo;
   archivo = fopen(nombreArchivo, "r");
   char *buffer = malloc(sizeof(char) * 45), bufferc;
-  *buffer = '\0';
   bufferc = fgetc(archivo);
   while (bufferc != EOF) {
-    while (bufferc != '\0' && bufferc != '\r' && bufferc != EOF) {
-      if(iswalpha(bufferc))
-      strcharcat(buffer, bufferc);
+    int i = 0;
+    while (bufferc != '\n' && bufferc != '\r' && bufferc != EOF) {
+      if (bufferc != '*') {
+        strcharcat(buffer, bufferc, i);
+        i++;
+      }
       bufferc = fgetc(archivo);
     }
     lista = strlist_agregar(lista, buffer);
-    strcpy(buffer, ""); //Reinicializa buffer
     while (bufferc != EOF && (bufferc == '\n' || bufferc == '\r'))
       bufferc = fgetc(archivo);
   }
   free(buffer);
+  fclose(archivo);
   return lista;
 }

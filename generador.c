@@ -3,14 +3,13 @@
 #include <time.h>
 #include <unistd.h>
 #include "strlist.h"
-#include <locale.h>
 
 /*
-** revisa_archivos : -> Int
+** falta_archivo : -> Int
 ** Si los 2 archivos existen devuelve 0, de lo contrario imprime lo que falta y
 ** devuelve 1.
 */
-int revisa_archivos() {
+int falta_archivo() {
   int i = 0;
   if (access("nombres.txt", F_OK)) {
     printf("El archivo nombres.txt no existe\n");
@@ -65,7 +64,7 @@ void genera_personas(int cantDatos, StrList nombres, StrList paises) {
 }
 
 int main() {
-  if (revisa_archivos()) return 0;
+  if (falta_archivo()) return 0;
   seedrand();  // Si se quiere tener resultados iguales en cada ejecucion se
                // debe comentar esta linea
   int cantDatos = ingreso_cantidad();
