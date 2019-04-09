@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include <unistd.h>
-#include "strlist.h"
+#include "glist.h"
 
 /*
 ** falta_archivo : -> Int
@@ -42,23 +43,55 @@ int ingreso_cantidad() {
 }
 
 /*
- ** genera_personas : Int StrList Strlist -> void
- ** Recibe la cantidad a generar y las 2 listas y escribe los datos generados
+** glist_llenar : StrList Char* -> StrList
+** LLena la lista con datos obtenidos del archivo dado.
+*/
+GList glist_llenar(GList lista, char* nombreArchivo) {
+  FILE* archivo;
+  archivo = fopen(nombreArchivo, "r");
+  char *buffer = malloc(sizeof(char) * 45), bufferc;
+  bufferc = fgetc(archivo);
+  while (bufferc != EOF) {
+    int i = 0;
+    while (bufferc != '\n' && bufferc != '\r' && bufferc != EOF) {
+      if (bufferc != '*') {
+        *(buffer + i) = bufferc;
+        *(buffer + i + 1) = '\0';
+        i++;
+      }
+      bufferc = fgetc(archivo);
+    }
+    char* newbuffer = malloc(sizeof(char) * 45);
+    strcpy(newbuffer, buffer);
+    lista = glist_agregar(lista, newbuffer);
+    while (bufferc != EOF && (bufferc == '\n' || bufferc == '\r'))
+      bufferc = fgetc(archivo);
+  }
+  free(buffer);
+  fclose(archivo);
+  return lista;
+}
+
+/*
+ ** genera_personas : Int GList GList -> void
+ ** Recibe la cantidad a generar y 2 listas, escribe los datos generados
  ** aleatoriamente en el archivo "personas.txt".
  */
-void genera_personas(int cantDatos, StrList nombres, StrList paises) {
+void genera_personas(int cantDatos, GList nombres, GList paises) {
   int rndNombres, rndPaises, rndEdad;
-  int largoNombres = strlist_largo(nombres);
-  int largoPaises = strlist_largo(paises);
+  int largoNombres = glist_largo(nombres);
+  int largoPaises = glist_largo(paises);
   FILE* archivo;
   archivo = fopen("personas.txt", "w+");
   for (int i = 0; i < cantDatos; i++) {
     rndNombres = rand() % largoNombres;
     rndPaises = rand() % largoPaises;
     rndEdad = (rand() % 100) + 1;
-    fprintf(archivo, "%s,", strlist_devolver_dato(nombres, rndNombres, largoNombres));
+    char* nombre = glist_devolver_dato(nombres, rndNombres, largoNombres);
+    fprintf(archivo, "%s,", nombre);
     fprintf(archivo, "%d,", rndEdad);
-    fprintf(archivo, "%s\n", strlist_devolver_dato(paises, rndPaises, largoPaises));
+    char* pais = glist_devolver_dato(paises, rndPaises, largoPaises);
+    fprintf(archivo, "%s\n", pais);
   }
   fclose(archivo);
 }
@@ -68,12 +101,12 @@ int main() {
   seedrand();  // Si se quiere tener resultados iguales en cada ejecucion se
                // debe comentar esta linea
   int cantDatos = ingreso_cantidad();
-  StrList nombres, paises;
-  nombres = strlist_llenar(strlist_crear(), "nombres.txt");
-  paises = strlist_llenar(strlist_crear(), "paises.txt");
+  GList nombres, paises;
+  nombres = glist_llenar(glist_crear(), "nombres.txt");
+  paises = glist_llenar(glist_crear(), "paises.txt");
   genera_personas(cantDatos, nombres, paises);
-  strlist_destruir(nombres);
-  strlist_destruir(paises);
+  glist_destruir(nombres, free);
+  glist_destruir(paises, free);
   printf("Se generaron %d personas aleatorias.\n", cantDatos);
   return 0;
 }

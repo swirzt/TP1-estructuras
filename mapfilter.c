@@ -6,8 +6,8 @@
 
 typedef struct {
   char* nombre;
-  char* pais;
   int edad;
+  char* pais;
 } Persona;
 
 #define MAX_NOMBRES 15
