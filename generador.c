@@ -43,6 +43,31 @@ int ingreso_cantidad() {
 }
 
 /*
+** es_no_letra : Char -> Int
+** Recibe un caracter, devuelve 1 si no es una letra, de lo contrario 0.
+*/
+int es_no_letra(char c) {
+  int tipo = 0;
+  if (c > 32 && c < 65)
+    tipo++;
+  else if (c > 90 && c < 96)
+    tipo++;
+  else if (c > 122 && c < 128)
+    tipo++;
+  else if (c > 154 && c < 160)
+    tipo++;
+  else if (c > 165 && c < 198) {
+    if (c != 181 && c != 182 && c != 183) tipo++;
+  } else if (c > 199 && c < 210)
+    tipo++;
+  else if (c > 212 && c < 224)
+    tipo++;
+  else if (c > 237)
+    tipo++;
+  return tipo;
+}
+
+/*
 ** glist_llenar : StrList Char* -> StrList
 ** LLena la lista con datos obtenidos del archivo dado.
 */
@@ -54,7 +79,7 @@ GList glist_llenar(GList lista, char* nombreArchivo) {
   while (bufferc != EOF) {
     int i = 0;
     while (bufferc != '\n' && bufferc != '\r' && bufferc != EOF) {
-      if (bufferc != '*') {
+      if (!es_no_letra(bufferc)) {
         *(buffer + i) = bufferc;
         *(buffer + i + 1) = '\0';
         i++;

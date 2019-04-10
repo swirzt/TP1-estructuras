@@ -10,9 +10,13 @@ typedef struct {
   char* pais;
 } Persona;
 
-#define MAX_NOMBRES 15
-#define MAX_PAISES 44
+#define MAX_NOMBRES 17
+#define MAX_PAISES 47
 
+/*
+** existe_archivo : -> Int
+** Devuelve 1 si el archivo existe, de lo contrario notifica y devuelve 0.
+*/
 int existe_archivo() {
   if (access("nombres.txt", F_OK)) {
     printf("El archivo nombres.txt no existe\n");
@@ -21,6 +25,11 @@ int existe_archivo() {
   return 1;
 }
 
+/*
+** persona_crear : Char* Int Char* -> Persona*
+** Recibe un nombre, una edad y un pais.
+** Devuelve un puntero a Persona con los datos dados.
+*/
 Persona* persona_crear(char* nombre, int edad, char* pais) {
   Persona* nuevaPersona = malloc(sizeof(Persona));
   char* nombrecpy = malloc(sizeof(char) * MAX_NOMBRES);
@@ -33,6 +42,11 @@ Persona* persona_crear(char* nombre, int edad, char* pais) {
   return nuevaPersona;
 }
 
+/*
+** llenar_lista_personas : GList Char* -> GList
+** Recibe una lista y el nombre de un archivo que almacena Personas.
+** Devuelve una lista con las Personas del archivo dentro.
+*/
 GList llenar_lista_personas(GList lista, char* archivoPersonas) {
   FILE* archivo = fopen(archivoPersonas, "r");
   char* buffer1 = malloc(sizeof(char) * MAX_NOMBRES);
@@ -73,6 +87,11 @@ GList llenar_lista_personas(GList lista, char* archivoPersonas) {
   return lista;
 }
 
+/*
+** copiar_persona : void* -> void*
+** Recibe un puntero Persona.
+** Crea una copia en memoria y devuelve la copia.
+*/
 void* copiar_persona(void* voidPersona) {
   Persona* datoPersona = voidPersona;
   Persona* copia = malloc(sizeof(Persona));
@@ -84,6 +103,10 @@ void* copiar_persona(void* voidPersona) {
   return copia;
 }
 
+/*
+** destruye_personas : void* -> void
+** Recibe un puntero a Persona, libera toda la memoria que esta ocupa.
+*/
 void destruye_personas(void* voidPersona) {
   Persona* datoPersona = voidPersona;
   free(datoPersona->nombre);
@@ -91,7 +114,12 @@ void destruye_personas(void* voidPersona) {
   free(datoPersona);
 }
 
-void* map1(void* voidPersona) {
+/*
+** datos_mas_uno : void* -> void*
+** Recibe un puntero a Persona.
+** Modifica todos sus datos +1 y la devuelve.
+*/
+void* datos_mas_uno(void* voidPersona) {
   Persona* datoPersona = voidPersona;
   int nombreLen = strlen(datoPersona->nombre);
   int paisLen = strlen(datoPersona->pais);
@@ -103,7 +131,11 @@ void* map1(void* voidPersona) {
   return datoPersona;
 }
 
-void* map2(void* voidPersona) {
+/*
+** datos_random : void* -> void*
+** Recibe un puntero a Persona, modifica sus valores de forma random.
+*/
+void* datos_random(void* voidPersona) {
   Persona* datoPersona = voidPersona;
   int nombreLen = strlen(datoPersona->nombre);
   int paisLen = strlen(datoPersona->pais);
@@ -113,25 +145,37 @@ void* map2(void* voidPersona) {
   return datoPersona;
 }
 
-int filter1(void* voidPersona) {
+/*
+** crisis_edad : void* -> Int
+** Recibe un puntero a Persona, devuelve 1 si su edad es menor a 50.
+** De lo contrario devuelve 0.
+*/
+int crisis_edad(void* voidPersona) {
   Persona* datoPersona = voidPersona;
   if (datoPersona->edad > 50) return 0;
   return 1;
 }
 
-int existe_e(char* palabra, int largo) {
+/*
+** hay_e : void* -> Int
+** Recibe un puntero a Persona.
+** Devuelve 1 si en el nombre de la Persona existe una 'e'.
+*/
+int hay_e(void* voidPersona) {
+  Persona* datoPersona = voidPersona;
+  int largoNom = strlen(datoPersona->nombre);
+  char* nombre = datoPersona->nombre;
   int hay = 0;
-  for (int i = 0; i < largo && !hay; i++)
-    if (*(palabra + i) == 'e') hay++;
+  for (int i = 0; i < largoNom && !hay; i++)
+    if (*(nombre + i) == 'e') hay++;
   return hay;
 }
 
-int filter2(void* voidPersona) {
-  Persona* datoPersona = voidPersona;
-  int largoNom = strlen(datoPersona->nombre);
-  return existe_e(datoPersona->nombre, largoNom);
-}
-
+/*
+** glist_imprimir_persona : GList Char* -> void
+** Recibe una lista de Personas y un nombre de archivo.
+** Almacena los datos de la lista en el archivo dado.
+*/
 void glist_imprimir_persona(GList lista, char* nombreArchivo) {
   FILE* archivo = fopen(nombreArchivo, "w");
   int largolista = glist_largo(lista);
@@ -148,25 +192,27 @@ int main() {
   GList personas = glist_crear();
   personas = llenar_lista_personas(personas, "personas.txt");
 
-  GList map;
-  map = glist_map(personas, map1, copiar_persona);
-  glist_imprimir_persona(map, "personasmap1.txt");
-  printf("Se completo el primer map\n");
-  glist_destruir(map, destruye_personas);
-  map = glist_map(personas, map2, copiar_persona);
-  glist_imprimir_persona(map, "personasmap2.txt");
-  printf("Se completo el segundo map\n");
-  glist_destruir(map, destruye_personas);
+  GList listamod;
 
-  GList filter;
-  filter = glist_filter(personas, filter1, copiar_persona);
-  glist_imprimir_persona(filter, "personafilter1.txt");
+  listamod = glist_map(personas, datos_mas_uno, copiar_persona);  // map1
+  glist_imprimir_persona(listamod, "personasnmap1.txt");
+  printf("Se completo el primer map\n");
+  glist_destruir(listamod, destruye_personas);
+
+  listamod = glist_map(personas, datos_random, copiar_persona);  // map2
+  glist_imprimir_persona(listamod, "personasmap2.txt");
+  printf("Se completo el segundo map\n");
+  glist_destruir(listamod, destruye_personas);
+
+  listamod = glist_filter(personas, crisis_edad, copiar_persona);  // filter1
+  glist_imprimir_persona(listamod, "personafilter1.txt");
   printf("Se completo el primer filter\n");
-  glist_destruir(filter, destruye_personas);
-  filter = glist_filter(personas, filter2, copiar_persona);
-  glist_imprimir_persona(filter, "personafilter2.txt");
+  glist_destruir(listamod, destruye_personas);
+
+  listamod = glist_filter(personas, hay_e, copiar_persona);  // filter2
+  glist_imprimir_persona(listamod, "personafilter2.txt");
   printf("Se completo el segundo filter\n");
-  glist_destruir(filter, destruye_personas);
+  glist_destruir(listamod, destruye_personas);
 
   glist_destruir(personas, destruye_personas);
   return 1;
