@@ -29,14 +29,6 @@ void glist_destruir(GList lista, Destruir d) {
       free(i);
       i = sigtmp;
     } while (i->next != lista);
-    // for (; i->next != lista;) {
-    //   GList sigtmp = i->next;
-    //   d(i->dato);
-    //   free(i);
-    //   i = sigtmp;
-    // }
-    // d(i->dato);
-    free(i);
   }
 }
 
@@ -98,9 +90,6 @@ GList glist_map(GList lista, Funcion f, Copia c) {
     listaMapeada = glist_agregar(listaMapeada, f(c(lista->dato)));
     lista = lista->next;
   } while (lista->next != inicio);
-  // for (; lista->next != inicio; lista = lista->next)
-  //   listaMapeada = glist_agregar(listaMapeada, f(c(lista->dato)));
-  // listaMapeada = glist_agregar(listaMapeada, f(c(lista->dato)));
   return listaMapeada;
 }
 
@@ -116,11 +105,5 @@ GList glist_filter(GList lista, Predicado p, Copia c) {
       listaFiltrada = glist_agregar(listaFiltrada, c(lista->dato));
     lista = lista->next;
   } while (lista->next != inicio);
-  // for (; lista->next != inicio; lista = lista->next)
-  //   if (p(lista->dato))
-  //     listaFiltrada = glist_agregar(listaFiltrada, c(lista->dato));
-  // if (p(lista->dato))
-  //   listaFiltrada = glist_agregar(listaFiltrada, c(lista->dato));
-
   return listaFiltrada;
 }
