@@ -5,6 +5,11 @@
 #include <unistd.h>
 #include "glist.h"
 
+#define MAX_NOMBRES 17
+#define MAX_PAISES 47
+
+#define CADENA_MAYOR MAX_NOMBRES > MAX_PAISES ? MAX_NOMBRES : MAX_PAISES
+
 /*
 ** falta_archivo : -> Int
 ** Si los 2 archivos existen devuelve 0, de lo contrario imprime lo que falta y
@@ -48,9 +53,9 @@ int ingreso_cantidad() {
 */
 int es_no_letra(char c) {
   int tipo = 0;
-  if (c > 32 && c < 65)
+  if (c > 0 && c < 65)
     tipo++;
-  else if (c > 90 && c < 96)
+  else if (c > 90 && c < 97)
     tipo++;
   else if (c > 122 && c < 128)
     tipo++;
@@ -74,16 +79,16 @@ int es_no_letra(char c) {
 GList glist_llenar(GList lista, char* nombreArchivo) {
   FILE* archivo;
   archivo = fopen(nombreArchivo, "r");
-  char *buffer = malloc(sizeof(char) * 45), bufferc;
+  char *buffer = malloc(sizeof(char) * CADENA_MAYOR), bufferc;
   bufferc = fgetc(archivo);
   while (bufferc != EOF) {
     int i = 0;
     while (bufferc != '\n' && bufferc != '\r' && bufferc != EOF) {
       if (!es_no_letra(bufferc)) {
         *(buffer + i) = bufferc;
-        *(buffer + i + 1) = '\0';
         i++;
       }
+      *(buffer + i + 1) = '\0';
       bufferc = fgetc(archivo);
     }
     char* newbuffer = malloc(sizeof(char) * 45);
