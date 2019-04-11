@@ -23,12 +23,12 @@ int glist_vacia(GList lista) { return lista == NULL; }
 void glist_destruir(GList lista, Destruir d) {
   if (!glist_vacia(lista)) {
     GList i = lista;
-    do{
+    do {
       GList sigtmp = i->next;
       d(i->dato);
       free(i);
       i = sigtmp;
-    } while {i->next != lista}
+    } while (i->next != lista);
     // for (; i->next != lista;) {
     //   GList sigtmp = i->next;
     //   d(i->dato);
@@ -95,9 +95,9 @@ GList glist_map(GList lista, Funcion f, Copia c) {
   GList inicio = lista;
   GList listaMapeada = glist_crear();
   do {
-     listaMapeada = glist_agregar(listaMapeada, f(c(lista->dato)));
-     lista = lista->next;
-  } while(lista->next != inicio);
+    listaMapeada = glist_agregar(listaMapeada, f(c(lista->dato)));
+    lista = lista->next;
+  } while (lista->next != inicio);
   // for (; lista->next != inicio; lista = lista->next)
   //   listaMapeada = glist_agregar(listaMapeada, f(c(lista->dato)));
   // listaMapeada = glist_agregar(listaMapeada, f(c(lista->dato)));
@@ -115,7 +115,7 @@ GList glist_filter(GList lista, Predicado p, Copia c) {
     if (p(lista->dato))
       listaFiltrada = glist_agregar(listaFiltrada, c(lista->dato));
     lista = lista->next;
-  } while(lista->next != inicio);
+  } while (lista->next != inicio);
   // for (; lista->next != inicio; lista = lista->next)
   //   if (p(lista->dato))
   //     listaFiltrada = glist_agregar(listaFiltrada, c(lista->dato));

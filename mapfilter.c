@@ -195,7 +195,7 @@ int main() {
   GList listamod;
 
   listamod = glist_map(personas, datos_mas_uno, copiar_persona);  // map1
-  glist_imprimir_persona(listamod, "personasnmap1.txt");
+  glist_imprimir_persona(listamod, "personasmap1.txt");
   printf("Se completo el primer map\n");
   glist_destruir(listamod, destruye_personas);
 
