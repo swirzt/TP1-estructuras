@@ -4,7 +4,7 @@ siguientes datos:
 *Nombre
 *Edad
 *País
-dicho programa requiere que se hayan escrito los nombres en el archivo
+Dicho programa requiere que se hayan escrito los nombres en el archivo
 "nombres.txt" y los paises en "paises.txt". La lista de personas generada se
 escribirá en "personas.txt".
 Luego se deberá ejecutar el archivo "mapfilter.c" para aplicar funciones sobre
