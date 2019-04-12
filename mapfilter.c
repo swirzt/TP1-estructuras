@@ -4,6 +4,26 @@
 #include <unistd.h>
 #include "glist.h"
 
+/*
+El programa toma los datos del archivo "personas.txt"
+-"personas.txt" debe ser de la forma: nombre,edad,lugarDeNacimiento
+
+Una vez leidos los datos procede de la siguiente forma:
+1)Aplica la funcion datos_mas_uno() a la lista original por medio de un map
+  Almacena los datos de la lista modificada en el archivo "personasmap1.txt"
+
+2)Aplica la funcion datos_random() a la lista original por medio de un map
+  Almacena los datos de la lista modificada en el archivo "personasmap2.txt"
+
+3)Aplica la funcion crisis_edad() a la lista original por medio de un filter
+  Almacena los datos de la lista filtrada en el archivo "personasfilter1.txt"
+
+4)Aplica la funcion hay_e() a la lista original por medio de un filter
+  Almacena los datos de la lista filtrada en el archivo "personasfilter2.txt"
+
+Todos los archivos de salida son de la forma: nombre,edad,lugarDeNacimiento
+*/
+
 typedef struct {
   char* nombre;
   int edad;

@@ -5,6 +5,16 @@
 #include <unistd.h>
 #include "glist.h"
 
+/*
+El programa toma los datos de los archivos "nombres.txt" y "paises.txt".
+-"nombres.txt" debe contener un nombre por línea.
+-"paises.txt" debe contener un pais/ciudad por línea.
+
+Al ser ejecutado pide al usuario el ingreso de la cantidad de personas a crear
+Imprime todas las personas en el archivo "personas.txt"
+-Cada linea es de la forma: nombre,edad,lugarDeNacimiento
+*/
+
 #define MAX_NOMBRES 17
 #define MAX_PAISES 47
 
