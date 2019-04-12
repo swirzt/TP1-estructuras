@@ -38,8 +38,8 @@ typedef struct {
 ** Devuelve 1 si el archivo existe, de lo contrario notifica y devuelve 0.
 */
 int existe_archivo() {
-  if (access("nombres.txt", F_OK)) {
-    printf("El archivo nombres.txt no existe\n");
+  if (access("personas.txt", F_OK)) {
+    printf("El archivo personas.txt no existe\n");
     return 0;
   }
   return 1;
@@ -208,32 +208,33 @@ void glist_imprimir_persona(GList lista, char* nombreArchivo) {
 }
 
 int main() {
-  if (!existe_archivo()) return 0;
-  GList personas = glist_crear();
-  personas = llenar_lista_personas(personas, "personas.txt");
+  if (existe_archivo()) {
+    GList personas = glist_crear();
+    personas = llenar_lista_personas(personas, "personas.txt");
 
-  GList listamod;
+    GList listamod;
 
-  listamod = glist_map(personas, datos_mas_uno, copiar_persona);  // map1
-  glist_imprimir_persona(listamod, "personasmap1.txt");
-  printf("Se completo el primer map\n");
-  glist_destruir(listamod, destruye_personas);
+    listamod = glist_map(personas, datos_mas_uno, copiar_persona);  // map1
+    glist_imprimir_persona(listamod, "personasmap1.txt");
+    printf("Se completo el primer map\n");
+    glist_destruir(listamod, destruye_personas);
 
-  listamod = glist_map(personas, datos_random, copiar_persona);  // map2
-  glist_imprimir_persona(listamod, "personasmap2.txt");
-  printf("Se completo el segundo map\n");
-  glist_destruir(listamod, destruye_personas);
+    listamod = glist_map(personas, datos_random, copiar_persona);  // map2
+    glist_imprimir_persona(listamod, "personasmap2.txt");
+    printf("Se completo el segundo map\n");
+    glist_destruir(listamod, destruye_personas);
 
-  listamod = glist_filter(personas, crisis_edad, copiar_persona);  // filter1
-  glist_imprimir_persona(listamod, "personafilter1.txt");
-  printf("Se completo el primer filter\n");
-  glist_destruir(listamod, destruye_personas);
+    listamod = glist_filter(personas, crisis_edad, copiar_persona);  // filter1
+    glist_imprimir_persona(listamod, "personafilter1.txt");
+    printf("Se completo el primer filter\n");
+    glist_destruir(listamod, destruye_personas);
 
-  listamod = glist_filter(personas, hay_e, copiar_persona);  // filter2
-  glist_imprimir_persona(listamod, "personafilter2.txt");
-  printf("Se completo el segundo filter\n");
-  glist_destruir(listamod, destruye_personas);
+    listamod = glist_filter(personas, hay_e, copiar_persona);  // filter2
+    glist_imprimir_persona(listamod, "personafilter2.txt");
+    printf("Se completo el segundo filter\n");
+    glist_destruir(listamod, destruye_personas);
 
-  glist_destruir(personas, destruye_personas);
+    glist_destruir(personas, destruye_personas);
+  }
   return 1;
 }
