@@ -7,7 +7,8 @@ siguientes datos:
 Dicho programa requiere que se hayan escrito los nombres en el archivo
 "nombres.txt" y los paises en "paises.txt". La lista de personas generada se
 escribirá en "personas.txt".
-Luego se deberá ejecutar el archivo "mapfilter.c" para aplicar funciones sobre
+El programa "mapfilter.c" deberá ejecutarse para aplicar funciones sobre
 las personas en el archivo "personas.txt". Los resultados de aplicar dichos map
 o filter serán escritos en sus respectivos archivos "personafilter1.txt",
-"personafilter2.txt", "personasmap1.txt"o "personasmap2.txt"
+"personafilter2.txt", "personasmap1.txt"o "personasmap2.txt".
+Para realizar la ejecución de dichos programas, debrá ejecutar el archivo "makefile".
