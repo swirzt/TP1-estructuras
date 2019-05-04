@@ -106,7 +106,7 @@ GList glist_llenar(GList lista, char* nombreArchivo) {
       *(buffer + i + 1) = '\0';
       bufferc = fgetc(archivo);
     }
-    char* newbuffer = malloc(sizeof(char) * 45);
+    char* newbuffer = malloc(sizeof(char) * CADENA_MAYOR);
     strcpy(newbuffer, buffer);
     lista = glist_agregar(lista, newbuffer);
     while (bufferc != EOF && (bufferc == '\n' || bufferc == '\r'))
